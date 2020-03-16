@@ -1,0 +1,28 @@
+import sqlite3
+
+db = sqlite3.connect("customers.sqlite")
+
+# db.execute("CREATE TABLE IF NOT EXISTS customers( name TEXT PRIMARY KEY NOT NULL, phone INTEGER NOT NULL, email TEXT )")
+db.execute("CREATE TABLE IF NOT EXISTS customers( name TEXT, phone INTEGER, email TEXT )")
+
+
+name = input("Enter customer's name: ")
+phone = input("Enter customer's phone: ")
+email = input("Enter customer's email: ")
+
+# db.execute("INSERT INTO contacts(name, phone, email) VALUES('BILL','6932487700','rozakos@staff.eslgaming.com')")
+sql = "INSERT INTO customers(name, phone, email) VALUES (?,?,?);"
+db.execute(sql, (name, phone, email))
+
+
+cursor = db.cursor()
+cursor.execute("SELECT * FROM customers")
+for name, phone, email in cursor:
+    print(name)
+    print(phone)
+    print(email)
+db.commit()
+db.close()
+
+
+
