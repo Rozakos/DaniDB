@@ -15,9 +15,9 @@ def print_result():
     print(resultList)
 
 
-def example1():
+def date_selection():
     def print_sel():
-        selected_date= (cal.selection_get())
+        selected_date = (cal.selection_get())
         print(selected_date)
         write("Ημερομηνία Παράδοσης: " + str(selected_date))
         resultList[3] = selected_date
@@ -28,6 +28,12 @@ def example1():
                    cursor="hand1", year=2020, month=2, day=5)
     cal.pack(fill="both", expand=True)
     ttk.Button(top, text="ok", command=print_sel).pack()
+
+
+canvas_width = 400
+canvas_height =400
+
+
 
 mainWindow = tk.Tk()
 s = ttk.Style(mainWindow)
@@ -41,13 +47,8 @@ mainWindow.geometry('700x400+75+100')
 
 
 
-
-
-
-
-
-button_save_results = tk.Button(mainWindow, text="Ημ/νία παράδοσης", font=40, bg='#F3AF25', command=example1)
-button_save_results.place(relx=0, rely=0.6, relwidth=0.2, relheight=0.1)
+button_save_results = tk.Button(mainWindow, text="Παράδοση", font=40, bg='#F3AF25', command=date_selection)
+button_save_results.grid(row=5, column=1)
 
 
 text_box = tk.Text(mainWindow, state=tk.DISABLED)
@@ -84,25 +85,31 @@ def save():
     write("Τα στοιχεία του πελάτη αποθηκεύτηκαν.")
 
 
-name_label = tk.Label(mainWindow, text='Όνομα : ',  bg='#F3AF25')
-name_label.place(relx=0, rely=0, relwidth=0.1, relheight=0.1)
+name_label = tk.Label(mainWindow, text='Όνομα : ', bg='#eae3e1')
+name_label.grid(row=0, column=1, padx=10, pady=10, sticky=W)
 
 name_Frame = tk.Frame(mainWindow, bg='#2e2d2d', bd=10)
-name_Frame.place(relx=0.1, rely=0, relwidth=0.2, relheight=0.1)
+name_Frame.grid(row=0, column=2, padx=10, pady=10)
 
-phone_label = tk.Label(mainWindow, text='Τηλ/νο : ',  bg='#F3AF25')
-phone_label.place(relx=0, rely=0.2, relwidth=0.1, relheight=0.1)
+phone_label = tk.Label(mainWindow, text='Τηλέφωνο : ',  bg='#eae3e1')
+phone_label.grid(row=1, column=1, padx=10, pady=10, sticky=W)
 
 phone_Frame = tk.Frame(mainWindow, bg='#2e2d2d', bd=10)
-phone_Frame.place(relx=0.1, rely=0.2, relwidth=0.2, relheight=0.1)
+phone_Frame.grid(row=1, column=2, padx=10, pady=10)
 
-phone_label = tk.Label(mainWindow, text='Υπηρεσία',  bg='#F3AF25')
-phone_label.place(relx=0, rely=0.4, relwidth=0.1, relheight=0.1)
+service_label = tk.Label(mainWindow, text='Υπηρεσία: ', bg='#eae3e1')
+service_label.grid(row=2, column=1, padx=10, pady=10, sticky=W)
+
+clothes_label = tk.Label(mainWindow, text='Είδη ρούχων: ', bg='#eae3e1')
+clothes_label.grid(row=3, column=1, padx=10, pady=10, sticky=W)
+
+
+
 
 
 entryText_name = tk.StringVar()
 entry_name = tk.Entry(name_Frame, textvariable=entryText_name)
-entry_name.place(relwidth=1, relheight=1)
+entry_name.grid(row=0, column=2)
 # placeholder_text = 'Write ID here'
 # entry_name.insert(0, placeholder_text)
 entry_name.bind("<Button-1>", lambda event: clear_entry(event, entry_name))
@@ -110,7 +117,7 @@ entry_name.bind('<Return>', lambda _: name())
 
 entryText_phone = tk.StringVar()
 entry_phone = tk.Entry(phone_Frame, textvariable=entryText_phone)
-entry_phone.place(relwidth=1, relheight=1)
+entry_phone.grid(row=1, column=2)
 # placeholder_text = 'Write ID here'
 # entry_name.insert(0, placeholder_text)
 entry_phone.bind("<Button-1>", lambda event: clear_entry(event, entry_phone))
@@ -125,6 +132,7 @@ def on_select(event=None):
         # write("event.widget:", event.widget.get())
 
         resultList[2] = event.widget.get()
+        write('Υπηρεσία: ' + resultList[2] + '\n')
 
     for i, x in enumerate(all_comboboxes):
         print("all_comboboxes[%d]: %s" % (i, x.get()))
@@ -138,7 +146,7 @@ all_comboboxes = []
 
 cb = ttk.Combobox(mainWindow, values=("Σιδέρωμα", "Πλύσιμο"))
 cb.set("")
-cb.place(relx=0.1, rely=0.4, relwidth=0.2, relheight=0.1)
+cb.grid(row=3, column=2, padx=10, pady=10)
 cb.bind('<<ComboboxSelected>>', on_select)
 
 
@@ -147,23 +155,22 @@ def on_select(event=None):
 
     if event:  # <-- this works only with bind because `command=` doesn't send event
         print("event.widget:", event.widget.get())
-        # write("event.widget:", event.widget.get())
 
-        resultList[2] = event.widget.get()
+
+        resultList[3] = event.widget.get()
+        write('Είδος Ρούχου: ' + resultList[3] + '\n')
 
     for i, x in enumerate(all_comboboxes):
         print("all_comboboxes[%d]: %s" % (i, x.get()))
-        # write("all_comboboxes[%d]: %s" % (i, x.get()))
-        resultList[2] = event.widget.get()
-        # print(resultList[6])
-        write('Υπηρεσία: ' + resultList[2] + '\n')
+        resultList[3] = event.widget.get()
+        write('Υπηρεσία: ' + resultList[3] + '\n')
 
 
 all_comboboxes2 = []
 
-cb = ttk.Combobox(mainWindow, values=("Σιδέρωμα", "Πλύσιμο"))
+cb = ttk.Combobox(mainWindow, values=("Ρούχο 1", "Ρούχο 2"))
 cb.set("")
-cb.place(relx=0.1, rely=0.5, relwidth=0.2, relheight=0.1)
+cb.grid(row=2, column=2, padx=10, pady=10)
 cb.bind('<<ComboboxSelected>>', on_select)
 
 
@@ -180,11 +187,6 @@ db = sqlite3.connect("customers.sqlite")
 # db.execute("CREATE TABLE IF NOT EXISTS customers( name TEXT PRIMARY KEY NOT NULL, phone INTEGER NOT NULL, email TEXT )")
 db.execute("CREATE TABLE IF NOT EXISTS customers( name TEXT, phone INTEGER, email TEXT )")
 
-
-# name = input("Enter customer's name: ")
-# phone = input("Enter customer's phone: ")
-# email = input("Enter customer's email: ")
-# search = input("Enter customer's info: ")
 
 
 # db.execute("INSERT INTO contacts(name, phone, email) VALUES('BILL','6932487700','rozakos@staff.eslgaming.com')")
