@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import *
 import sqlite3
 import tkinter.ttk as ttk
+from tkinter.ttk import*
 import time
 from tkcalendar import Calendar, DateEntry
 import datetime
@@ -9,7 +10,7 @@ import datetime
 
 
 resultList = ["-", "-", "-", "-"]
-
+search_name = ["-"]
 
 def print_result():
     print(resultList)
@@ -37,12 +38,21 @@ canvas_height =400
 
 mainWindow = tk.Tk()
 s = ttk.Style(mainWindow)
-s.theme_use('clam')
+s.theme_use('vista')
 
 mainWindow.configure(bg='#eae3e1')
 
 mainWindow.title("Dani Boi")
 mainWindow.geometry('700x400+75+100')
+# mainWindow.columnconfigure(0, weight=2)
+# mainWindow.columnconfigure(1, weight=2)
+# mainWindow.columnconfigure(2, weight=2)
+# mainWindow.columnconfigure(3, weight=1)
+
+# mainWindow.rowconfigure(0, weight=1)
+# mainWindow.rowconfigure(1, weight=5)
+# mainWindow.rowconfigure(2, weight=5)
+# mainWindow.rowconfigure(3, weight=1)
 
 
 
@@ -81,6 +91,13 @@ def phone():
     resultList[1] = entry_phone
     return entry_phone
 
+def search():
+    entry_search = entryText_search.get()
+    write("Όρος αναζήτησης: " + entry_search + '\n')
+    print(entry_search)
+    search_name[0] = entry_search
+    return entry_search
+
 def save():
     write("Τα στοιχεία του πελάτη αποθηκεύτηκαν.")
 
@@ -103,25 +120,30 @@ service_label.grid(row=2, column=1, padx=10, pady=10, sticky=W)
 clothes_label = tk.Label(mainWindow, text='Είδη ρούχων: ', bg='#eae3e1')
 clothes_label.grid(row=3, column=1, padx=10, pady=10, sticky=W)
 
+search_label = tk.Label(mainWindow, text='Αναζήτηση: ', bg='#eae3e1')
+search_label.grid(row=6, column=1, padx=10, pady=10, sticky=W)
 
-
+search_Frame = tk.Frame(mainWindow, bg='#2e2d2d', bd=10)
+search_Frame.grid(row=6, column=2, padx=10, pady=10)
 
 
 entryText_name = tk.StringVar()
 entry_name = tk.Entry(name_Frame, textvariable=entryText_name)
 entry_name.grid(row=0, column=2)
-# placeholder_text = 'Write ID here'
-# entry_name.insert(0, placeholder_text)
 entry_name.bind("<Button-1>", lambda event: clear_entry(event, entry_name))
 entry_name.bind('<Return>', lambda _: name())
 
 entryText_phone = tk.StringVar()
 entry_phone = tk.Entry(phone_Frame, textvariable=entryText_phone)
 entry_phone.grid(row=1, column=2)
-# placeholder_text = 'Write ID here'
-# entry_name.insert(0, placeholder_text)
 entry_phone.bind("<Button-1>", lambda event: clear_entry(event, entry_phone))
 entry_phone.bind('<Return>', lambda _: phone())
+
+entryText_search = tk.StringVar()
+entry_search = tk.Entry(search_Frame, textvariable=entryText_search)
+entry_search.grid(row=6, column=2)
+entry_search.bind("<Button-1>", lambda event: clear_entry(event, entry_search))
+entry_search.bind('<Return>', lambda _: search())
 
 
 def on_select(event=None):
@@ -176,8 +198,23 @@ cb.bind('<<ComboboxSelected>>', on_select)
 
 all_comboboxes2.append(cb)
 
+def search_result():
+    db = sqlite3.connect("customers.sqlite")
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM customers WHERE name =? ", (search_name[0], ))
+    for name, phone, email in cursor:
+        write(name)
+        write(str(phone))
+        write(email)
+        print(name)
+        print(phone)
+        print(email)
+    db.commit()
+    db.close()
 
-button_save_results = tk.Button(mainWindow, text="Save", font=40, bg='#f7512d', command=print_result)
+
+
+button_save_results = tk.Button(mainWindow, text="Save", font=40, bg='#f7512d', command=search_result)
 button_save_results.place(relx=0, rely=0.9, relwidth=0.15, relheight=0.1)
 
 mainWindow.mainloop()
@@ -192,17 +229,6 @@ db.execute("CREATE TABLE IF NOT EXISTS customers( name TEXT, phone INTEGER, emai
 # db.execute("INSERT INTO contacts(name, phone, email) VALUES('BILL','6932487700','rozakos@staff.eslgaming.com')")
 sql = "INSERT INTO customers(name, phone, email) VALUES (?,?,?);"
 # db.execute(sql, (name, phone, email))
-search_command = ("SELECT * FROM customers WHERE name =? ", (name, ))
+search_command = ("SELECT * FROM customers WHERE name =? ", (search_name[0], ))
 
-cursor = db.cursor()
-cursor.execute("SELECT * FROM customers WHERE name =? ", (name, ))
-
-
-# cursor.execute("SELECT * FROM customers")
-for name, phone, email in cursor:
-    print(name)
-    print(phone)
-    print(email)
-db.commit()
-db.close()
 
